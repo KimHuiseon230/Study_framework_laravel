@@ -1,53 +1,77 @@
 @extends('layouts.forum')
-{{-- 메인 --}}
 @section('inside_head_tag')
-    <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 @endsection
+{{-- 내용 --}}
 @section('content')
-    <div class="container">
-        <div class="row my-3">
-            <div class="col-12">
-                <label>Title</label>
-                <input type="text"class="form-control"id="title">
-            </div>
-        </div>
-        <div id="editor">
-          <p>This is some sample content.</p>
-      </div>
-        {{-- category bootstrap:select option default 선택 --}}
-        <div class="row my-3">
-            <div class="col-12">
-                <label>Category</label>
-                <select class="form-select"id="category_id">
-                    <option value="movie">movie</option>
-                    <option value="movie">music</option>
-                </select>
-            </div>
-        </div>
-        {{-- ckedioer --}}
-        <div class="row mt-5">
-            <div class="col-12">
-                <div id="editor">
-                </div>
-            </div>
-        </div>
-        {{-- 전송 bootstrap: right button --}}
-        <div class="row my-3">
-            <div class="col-12">
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-                    <button class="btn btn-success" type="button">submit</button>
-                </div>
-            </div>
-        </div>
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-12">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title">
     </div>
+  </div>
+
+  <div class="row my-5">
+    <div class="col-12">
+      <label>Category</label>
+      <select class="form-select" id="category_id">
+        @foreach ($categories as $category)
+          <option value="{{$category->id}}">{{$category->title}}</option>
+        @endforeach
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div id="editor">
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 justify-content-end mt-2">
+    <button class="btn btn-primary" type="button" id="submit">전송</button>
+  </div>
+</div>
 @endsection
-{{-- ckedioer script --}}
+
 @section('before_body_end_tag')
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'))
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
+{{-- jquery cdn --}}
+  <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+  <script>
+    ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+  </script>
+  <script>
+    let CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    $(document).ready(function(){
+      $('#submit').click(function(){
+        let title = $("#title").val();
+        let category_id = $("#category_id").val(); 
+        let content = $(".ck-content").html();
+        $.ajax({
+          type: "POST",
+          url: "/store",
+          data: {
+            _token: CSRF_TOKEN,
+            title: title,
+            category_id: category_id,
+            content: content
+          },
+          dataType: 'JSON',
+          success: function success(data){
+            console.log(data.result);
+            location.href = '/';
+          },
+          error: function (response){
+            console.log(response);
+          }
+        });
+      });
+    });
+  </script>
 @endsection

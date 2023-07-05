@@ -21,15 +21,17 @@ use Illuminate\Http\Request;-----------------------------------------------
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::get('/',[ForumController::class,'index']);
-Route::get('/1/view',[ForumController::class,'view']);
-Route::get('/create',[ForumController::class,'create']);
 
-Route::get('/category',[CategoryController::class,'index']);
-Route::get('/category/1/view',[CategoryController::class,'view']);
-Route::get('/category/store',[CategoryController::class,'store']);
+Route::get('/', [ForumController::class, 'index']);
+Route::get('/1/view', [ForumController::class, 'view']);
+Route::get('/create', [ForumController::class, 'create']);
+Route::post('/store', [ForumController::class, 'store']);
 
-
+Route::get('/category', [CategoryController::class, 'index']);
+Route::get('/category/{id}/view', [CategoryController::class, 'view']);
+Route::post('/category/store', [CategoryController::class, 'store']);
+Route::delete('/category/{id}/delete', [CategoryController::class, 'delete']);
+Route::put('/category/{id}/update', [CategoryController::class, 'update']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -41,4 +43,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
