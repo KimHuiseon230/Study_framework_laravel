@@ -23,9 +23,16 @@ use Illuminate\Http\Request;-----------------------------------------------
 // });
 
 Route::get('/', [ForumController::class, 'index']);
-Route::get('/1/view', [ForumController::class, 'view']);
+Route::get('/{id}/view', [ForumController::class, 'view']);
 Route::get('/create', [ForumController::class, 'create']);
 Route::post('/store', [ForumController::class, 'store']);
+Route::get('/{id}/category', [ForumController::class, 'category']);
+Route::get('/{id}/edit', [ForumController::class, 'edit']);
+Route::post('/update', [ForumController::class, 'update']);
+Route::delete('/{id}/delete', [ForumController::class, 'delete']);
+Route::post('/reply/store', [ForumController::class, 'replyStore']);
+
+
 
 Route::get('/category', [CategoryController::class, 'index']);
 Route::get('/category/{id}/view', [CategoryController::class, 'view']);
